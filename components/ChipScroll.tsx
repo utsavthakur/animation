@@ -20,31 +20,40 @@ export default function ChipScroll() {
 
     useEffect(() => {
         const loadImages = async () => {
-            const loadedImages: HTMLImageElement[] = [];
+            // 1. Load first frame immediately to unblock render
+            const firstImg = new Image();
+            firstImg.src = "/sequence/ezgif-frame-001.png";
+            await new Promise((resolve) => {
+                firstImg.onload = resolve;
+                firstImg.onerror = resolve;
+            });
 
-            for (let i = 1; i <= FRAME_COUNT; i++) {
+            // Show first frame immediately
+            setImages([firstImg]);
+            setLoaded(true);
+
+            // 2. Load the rest in background (parallel)
+            const remainingImagesProms = [];
+            for (let i = 2; i <= FRAME_COUNT; i++) {
                 const img = new Image();
                 let src = "";
-
                 if (i <= 240) {
-                    // First sequence: 1 -> 240
                     const frameNumber = i.toString().padStart(3, "0");
                     src = `/sequence/ezgif-frame-${frameNumber}.png`;
                 } else {
-                    // Second sequence (Photo): 240 -> 1 (Descending)
                     const frameNumber = (481 - i).toString().padStart(3, "0");
                     src = `/photo/ezgif-frame-${frameNumber}.png`;
                 }
-
                 img.src = src;
-                await new Promise((resolve) => {
-                    img.onload = resolve;
-                    img.onerror = resolve; // Continue even if frame fails
+                const p = new Promise<HTMLImageElement>((resolve) => {
+                    img.onload = () => resolve(img);
+                    img.onerror = () => resolve(img);
                 });
-                loadedImages.push(img);
+                remainingImagesProms.push(p);
             }
-            setImages(loadedImages);
-            setLoaded(true);
+
+            const restImages = await Promise.all(remainingImagesProms);
+            setImages([firstImg, ...restImages]);
         };
 
         loadImages();
@@ -97,16 +106,7 @@ export default function ChipScroll() {
         return () => window.removeEventListener('resize', handleResize);
     }, [loaded, currentFrame]);
 
-    if (!loaded) {
-        return (
-            <div className="h-screen w-full flex items-center justify-center bg-black text-white/50">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin"></div>
-                    <p className="font-mono text-sm tracking-widest uppercase">Initializing Neural Core...</p>
-                </div>
-            </div>
-        );
-    }
+
 
     return (
         <div ref={containerRef} className="relative h-[800vh] bg-black">

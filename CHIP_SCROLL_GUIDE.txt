@@ -130,16 +130,7 @@ export default function ChipScroll() {
         return () => window.removeEventListener('resize', handleResize);
     }, [loaded, currentFrame]);
 
-    if (!loaded) {
-        return (
-            <div className="h-screen w-full flex items-center justify-center bg-black text-white/50">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin"></div>
-                    <p className="font-mono text-sm tracking-widest uppercase">Initializing Neural Core...</p>
-                </div>
-            </div>
-        );
-    }
+
 
     return (
         <div ref={containerRef} className="relative h-[800vh] bg-black">
