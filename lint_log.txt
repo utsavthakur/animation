@@ -1,0 +1,16 @@
+﻿
+> temp_project@0.1.0 lint
+> eslint
+
+
+C:\Users\utsav\Desktop\portfolio\components\ChipScroll.tsx
+   3:42  warning  'motion' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+   4:39  warning  'useMemo' is defined but never used                                                                             @typescript-eslint/no-unused-vars
+  89:8   warning  React Hook useEffect has a missing dependency: 'renderFrame'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  98:8   warning  React Hook useEffect has a missing dependency: 'renderFrame'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\utsav\Desktop\portfolio\components\ProjectsSection.tsx
+  4:32  warning  'ArrowUpRight' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 5 problems (0 errors, 5 warnings)
+

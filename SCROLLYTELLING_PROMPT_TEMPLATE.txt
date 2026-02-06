@@ -1,0 +1,50 @@
+# Prompt Template for Scrollytelling Components
+
+You can use the following prompt to generate similar scroll-based image sequence animations in Next.js. Just replace the [Variables] in brackets with your specific details.
+
+---
+
+**Role:** Expert Frontend Developer specializing in "Scrollytelling" and Creative interactions.
+
+**Task:** Create a scroll-controlled image sequence animation component using **Next.js**, **Framer Motion**, and **HTML5 Canvas**.
+
+**Requirements:**
+
+1.  **Tech Stack:** 
+    *   Next.js (App Router, Client Component)
+    *   Framer Motion (for scroll progress hooks like `useScroll`, `useTransform`, `useMotionValueEvent`)
+    *   HTML Canvas (for rendering high-performance image sequences)
+
+2.  **Core Functionality:**
+    *   Create a component named `[ComponentName]`.
+    *   It should render a `<canvas>` element that fills the viewport (`fixed`, `w-full`, `h-full`).
+    *   The parent container should have a large height (e.g., `[ScrollHeight, e.g., 400vh]`) to allow for scrolling.
+    *   Map the vertical scroll progress (`0` to `1`) to an image frame index (`0` to `[TotalFrameCount - 1]`).
+    *   Load images from a local folder: `/public/[FolderName]/`.
+    *   Image naming convention: `[Prefix]-[number].png` (e.g., `frame-001.png`, `frame-002.png`).
+
+3.  **Performance & UX:**
+    *   **Preloading:** Implementation MUST preload all `[TotalFrameCount]` images before showing the canvas. show a loading spinner/percentage while loading.
+    *   **Canvas Rendering:** Use `requestAnimationFrame` or Framer Motion's `useMotionValueEvent` to draw the current frame to the canvas.
+    *   **Responsiveness:** The image drawn on the canvas must behave like `object-fit: contain` (maintain aspect ratio, center in screen, fit within bounds) and update on window resize.
+    *   **Smoothness:** Ensure scrubbing is performant.
+
+4.  **Specific Details for this Request:**
+    *   **Total Frames:** [TotalFrameCount]
+    *   **Folder:** `public/[FolderName]`
+    *   **File Pattern:** `[FileNamePrefix]-001` to `[FileNamePrefix]-[TotalFrameCount]`
+    *   **Context:** [Describe what is happening in the animation, e.g., "A 3D product rotates 360 degrees" or "A chip explodes into components"]
+
+**Output:**
+Provide the full, ready-to-copy code for the component.
+
+---
+
+## Example Usage
+"I need a scrollytelling component for a car website.
+- Component Name: `CarSpin`
+- Total Frames: 120
+- Images are in: `public/car-spin/`
+- Naming: `view-001.jpg` to `view-120.jpg`
+- Scroll Height: 500vh
+- Please ensure it handles window resizing correctly."

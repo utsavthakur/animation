@@ -1,0 +1,349 @@
+Core Instruction
+
+You are a senior front-end architect building a production-ready portfolio website for a computer engineering student specializing in artificial intelligence and full-stack development.
+
+The design language should feel like a premium AI hardware company, not a typical student portfolio.
+
+The site must feel:
+
+Minimal
+
+Technical
+
+Cinematic
+
+High-performance
+
+Engineer-focused, not designer-gimmicky
+
+Developer Identity (Content Source)
+
+Use the following profile to generate content:
+
+Name: Utsav Thakur
+Title: Computer Engineer | AI & Full-Stack Developer
+
+Profile Summary:
+
+Specializing in Artificial Intelligence
+
+Full-stack developer intern at Sentiment AI
+
+Currently learning MERN and MEAN stacks
+
+Strengthening core knowledge in Machine Learning
+
+Programming experience in:
+
+C
+
+C++
+
+Java (Spring, Spring Boot)
+
+Python (Machine Learning)
+
+Familiar with:
+
+Cloud concepts
+
+System design basics
+
+Software engineering fundamentals
+
+Tone of text:
+
+Professional
+
+Concise
+
+Technical
+
+Confident, not boastful
+
+Technology Stack
+
+Use:
+
+Next.js (App Router)
+
+TypeScript
+
+Tailwind CSS
+
+Framer Motion
+
+HTML5 Canvas for the existing chip animation
+
+Follow production standards:
+
+Modular components
+
+Clean folder structure
+
+No inline styling unless necessary
+
+Reusable UI components
+
+Page Structure
+1. Hero Section (Scrollytelling)
+
+Keep the existing NeuralCore X1 chip scroll animation.
+
+Requirements:
+
+Sticky canvas
+
+400vh scroll experience
+
+Exploding chip animation tied to scroll progress
+
+Text overlays describing:
+
+AI systems
+
+Full-stack architecture
+
+Machine learning
+
+Engineering mindset
+
+Do not redesign or break this section.
+
+Only refine:
+
+Typography
+
+Text content
+
+Responsiveness
+
+2. About Section
+
+Minimal, technical, no fluff.
+
+Layout:
+
+Left: Short professional bio
+
+Right: Key stats or highlights
+
+Content blocks:
+
+Who I am
+
+Current role (Sentiment AI intern)
+
+Core interests:
+
+AI systems
+
+Backend engineering
+
+Scalable architectures
+
+3. Tech Stack Section
+
+Grid of technologies grouped by domain:
+
+Languages
+
+C
+
+C++
+
+Java
+
+Python
+
+JavaScript
+
+TypeScript
+
+Frameworks
+
+Spring Boot
+
+React
+
+Node.js
+
+Express
+
+Next.js
+
+AI / Data
+
+Machine Learning
+
+NumPy
+
+Pandas
+
+scikit-learn (if applicable)
+
+Tools & Concepts
+
+Git
+
+REST APIs
+
+Cloud basics
+
+Linux
+
+System design fundamentals
+
+Visual style:
+
+Minimal tech badges
+
+Subtle hover effects
+
+No flashy gradients
+
+4. Projects Section
+
+Card-based layout.
+
+Each project card should contain:
+
+Title
+
+One-line description
+
+Tech stack
+
+GitHub link
+
+Live demo (if available)
+
+Style:
+
+Dark, glass or matte cards
+
+Subtle hover elevation
+
+Technical look, not playful
+
+5. Experience Section
+
+Vertical timeline.
+
+Entry:
+Sentiment AI
+Full-Stack Developer Intern
+
+Worked on backend and AI-related systems
+
+Contributed to application features
+
+Exposure to production-level development
+
+6. Contact Section
+
+Simple and direct.
+
+Include:
+
+Email
+
+GitHub
+
+LinkedIn
+
+Layout:
+
+Centered
+
+Minimal form or direct contact links
+
+Design System
+
+Color palette:
+
+Background: Near-black or deep slate
+
+Accent: Electric blue or subtle cyan
+
+Text:
+
+Primary: White
+
+Secondary: Muted gray
+
+Typography:
+
+Modern sans-serif
+
+Technical feel
+
+Strong hierarchy
+
+Spacing:
+
+Large vertical breathing room
+
+Section-based layout
+
+Motion Guidelines
+
+Use Framer Motion sparingly:
+
+Allowed:
+
+Fade-in on scroll
+
+Subtle parallax
+
+Card hover lift
+
+Section transitions
+
+Avoid:
+
+Excessive bounce
+
+Cartoonish animations
+
+Overly decorative motion
+
+The chip scrollytelling remains the primary animation.
+
+Performance Rules
+
+Lazy-load heavy components
+
+Avoid unnecessary re-renders
+
+Optimize canvas logic
+
+Keep Lighthouse performance above 85
+
+File Structure
+app/
+  page.tsx
+components/
+  ChipScroll.tsx
+  AboutSection.tsx
+  TechStack.tsx
+  ProjectsSection.tsx
+  ExperienceSection.tsx
+  ContactSection.tsxs
+lib/
+styles/
+
+Final Output Requirements
+
+Generate:
+
+A complete Next.js page using these sections.
+
+Modular components for each section.
+
+Clean, readable TypeScript.
+
+Production-ready layout.
+
+Do not include placeholder lorem ipsum.
+Use real, technical content based on the provided profile.

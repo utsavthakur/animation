@@ -1,0 +1,167 @@
+# How to Create the ChipScroll Component
+
+## 1. Prerequisites
+First, ensure you have the required dependencies installed (framer-motion for animations):
+
+```bash
+npm install framer-motion
+# or
+yarn add framer-motion
+```
+
+## 2. Directory Structure & Assets
+You need to organize your image sequences in the `public` folder of your Next.js project.
+
+Structure:
+```
+public/
+  ├── sequence/
+  │   ├── ezgif-frame-001.png
+  │   ├── ...
+  │   └── ezgif-frame-240.png
+  └── photo/
+      ├── ezgif-frame-001.png
+      ├── ...
+      └── ezgif-frame-240.png
+```
+
+*Note: The code expects 480 total frames. The first 240 come from the `sequence` folder, and the next 240 come from the `photo` folder (rendering in reverse order).*
+
+## 3. Create the Component
+Create a new file at `components/ChipScroll.tsx` and paste the following code:
+
+```tsx
+"use client";
+
+import { useScroll, useMotionValueEvent, motion, useTransform } from "framer-motion";
+import { useRef, useEffect, useState, useMemo } from "react";
+
+const FRAME_COUNT = 480;
+
+export default function ChipScroll() {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [images, setImages] = useState<HTMLImageElement[]>([]);
+    const [loaded, setLoaded] = useState(false);
+
+    // Scroll mapping: 0 to 1 -> 0 to FRAME_COUNT - 1
+    const { scrollYProgress } = useScroll({
+        offset: ["start start", "end end"],
+    });
+
+    const currentFrame = useTransform(scrollYProgress, [0, 1], [0, FRAME_COUNT - 1]);
+
+    useEffect(() => {
+        const loadImages = async () => {
+            const loadedImages: HTMLImageElement[] = [];
+
+            for (let i = 1; i <= FRAME_COUNT; i++) {
+                const img = new Image();
+                let src = "";
+
+                if (i <= 240) {
+                    // First sequence: 1 -> 240
+                    const frameNumber = i.toString().padStart(3, "0");
+                    src = `/sequence/ezgif-frame-${frameNumber}.png`;
+                } else {
+                    // Second sequence (Photo): 240 -> 1 (Descending)
+                    const frameNumber = (481 - i).toString().padStart(3, "0");
+                    src = `/photo/ezgif-frame-${frameNumber}.png`;
+                }
+
+                img.src = src;
+                await new Promise((resolve) => {
+                    img.onload = resolve;
+                    img.onerror = resolve; // Continue even if frame fails
+                });
+                loadedImages.push(img);
+            }
+            setImages(loadedImages);
+            setLoaded(true);
+        };
+
+        loadImages();
+    }, []);
+
+    const renderFrame = (index: number) => {
+        const canvas = canvasRef.current;
+        if (!canvas || images.length === 0) return;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        const img = images[Math.min(FRAME_COUNT - 1, Math.max(0, Math.floor(index)))];
+        if (!img) return;
+
+        // Responsive scaling (contain)
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const scale = Math.max(
+            canvas.width / img.width,
+            canvas.height / img.height
+        );
+        const x = (canvas.width / 2) - (img.width / 2) * scale;
+        const y = (canvas.height / 2) - (img.height / 2) * scale;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+    };
+
+    // Render on scroll update
+    useMotionValueEvent(currentFrame, "change", (latest) => {
+        if (loaded) renderFrame(latest);
+    });
+
+    // Initial render when loaded
+    useEffect(() => {
+        if (loaded) {
+            // Force render first frame
+            renderFrame(0);
+        }
+    }, [loaded]);
+
+    // Handle resize
+    useEffect(() => {
+        const handleResize = () => {
+            if (loaded) renderFrame(currentFrame.get());
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [loaded, currentFrame]);
+
+    if (!loaded) {
+        return (
+            <div className="h-screen w-full flex items-center justify-center bg-black text-white/50">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin"></div>
+                    <p className="font-mono text-sm tracking-widest uppercase">Initializing Neural Core...</p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div ref={containerRef} className="relative h-[800vh] bg-black">
+            <div className="fixed top-0 left-0 h-screen w-full overflow-hidden z-0">
+                <canvas ref={canvasRef} className="block w-full h-full" />
+            </div>
+        </div>
+    );
+}
+```
+
+## 4. Usage
+Import and use the component in your page (e.g., `app/page.tsx`):
+
+```tsx
+import ChipScroll from "@/components/ChipScroll";
+
+export default function Home() {
+  return (
+    <main className="min-h-screen">
+      <ChipScroll />
+    </main>
+  );
+}
+```
