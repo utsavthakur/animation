@@ -13,6 +13,7 @@ export default function ChipScroll() {
 
     // Scroll mapping: 0 to 1 -> 0 to FRAME_COUNT - 1
     const { scrollYProgress } = useScroll({
+        target: containerRef,
         offset: ["start start", "end end"],
     });
 
@@ -59,6 +60,21 @@ export default function ChipScroll() {
         loadImages();
     }, []);
 
+    // Handle resize
+    useEffect(() => {
+        const handleResize = () => {
+            const canvas = canvasRef.current;
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                if (loaded) renderFrame(currentFrame.get());
+            }
+        };
+        handleResize(); // Initial size
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [loaded, currentFrame]);
+
     const renderFrame = (index: number) => {
         const canvas = canvasRef.current;
         if (!canvas || images.length === 0) return;
@@ -67,12 +83,9 @@ export default function ChipScroll() {
         if (!ctx) return;
 
         const img = images[Math.min(FRAME_COUNT - 1, Math.max(0, Math.floor(index)))];
-        if (!img) return;
+        if (!img || !img.width) return; // Prevent drawing if image not loaded or broken
 
-        // Responsive scaling (contain)
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
+        // Calculate scale to cover/contain as needed (contain here)
         const scale = Math.max(
             canvas.width / img.width,
             canvas.height / img.height
@@ -92,19 +105,9 @@ export default function ChipScroll() {
     // Initial render when loaded
     useEffect(() => {
         if (loaded) {
-            // Force render first frame
-            renderFrame(0);
+            renderFrame(currentFrame.get());
         }
     }, [loaded]);
-
-    // Handle resize
-    useEffect(() => {
-        const handleResize = () => {
-            if (loaded) renderFrame(currentFrame.get());
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [loaded, currentFrame]);
 
 
 
