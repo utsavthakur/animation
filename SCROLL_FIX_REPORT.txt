@@ -1,0 +1,32 @@
+[ERROR REPORT] - SCROLL ANIMATION FAILURE ON VERCEL
+
+ISSUE:
+The "ChipScroll" animation was functioning correctly in the local development environment (localhost) but failed to trigger or animate on the Vercel production deployment. The screen would remain black or static despite scrolling.
+
+ROOT CAUSE ANALYSIS:
+1. Missing Scroll Target:
+   The `useScroll` hook from `framer-motion` was initialized without a `target` property:
+   `const { scrollYProgress } = useScroll({ offset: ["start start", "end end"] });`
+   
+   Without an explicit target, Framer Motion tracks the global viewport scroll. In production builds or certain styling contexts (especially with `overflow: hidden` or custom layout structures), the relative offset calculations ["start start", "end end"] can become detached from the actual DOM element, leading to values that never update or are always 0.
+
+2. Potential Resize Thrashing:
+   The canvas resize logic was originally inside the `renderFrame` function. This could cause performance bottlenecks or race conditions where the canvas dimensions weren't ready when the first frame tried to render.
+
+3. Image Loading Instability:
+   There were no checks for `img.width` or `img.height` being valid numbers before calculation. If an image failed to load in production (due to network speed or caching), this could cause `NaN` values in the coordinate calculations, crashing the canvas render loop.
+
+FIX IMPLEMENTED:
+1. EXPLICIT BINDING (Critical Fix):
+   We verified the container using a React ref and explicitly bound the scroll listener to it:
+   `const { scrollYProgress } = useScroll({ target: containerRef, offset: ... });`
+   This forces Framer Motion to track the specific `div` element's position in the viewport, ensuring accurate progress values regardless of the environment.
+
+2. RESIZE OPTIMIZATION:
+   Moved the resize logic out of the scroll loop and into a dedicated `useEffect` with a "resize" event listener. This ensures the canvas is always the correct size without re-calculating on every single scroll frame.
+
+3. SAFETY GUARDS:
+   Added `if (!img || !img.width) return;` to the render function. This prevents the code from breaking if a specific frame hasn't loaded yet, ensuring the rest of the app ensures to function.
+
+STATUS:
+RESOLVED - Changes pushed to master branch.
